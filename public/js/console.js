@@ -14,7 +14,7 @@ function toggleConsole(server) {
         // Connect to websocket
         listenerWs.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            if (data.action === "log") {
+            if (data.action === "log" && data.server === server) {
                 const log = document.createElement('p');
 
                 if (data.data.includes('WARN')) {

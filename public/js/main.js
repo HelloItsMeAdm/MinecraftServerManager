@@ -1,15 +1,15 @@
 /*
 TODO:
-- Reconnect - recall all
 - Multi listen fix
-- Console log for different server fix
 - Setting for plugin copy
 - Nice logging
 */
 let ws;
 let wsDiv;
 
-document.addEventListener('DOMContentLoaded', function() {
+window.onload = init;
+
+function init() {
     // start ws
     ws = new WebSocket('ws://localhost:8080');
     wsDiv = document.getElementById('ws');
@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
             ws = new WebSocket('ws://localhost:8080');
             ws.onopen = () => {
                 wsDiv.style.display = "none";
+                document.getElementById('server-list').innerHTML = "";
+                init();
             };
             ws.onclose = () => {
                 wsDiv.style.display = "flex";
@@ -94,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleConsole();
         }
     });
-});
+}
 
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text);
