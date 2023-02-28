@@ -223,8 +223,9 @@ main {
 }
 .server .server-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    flex-direction: column;
     width: 80%;
     border-top: 2px solid var(--lighter-darker-gray);
     padding-top: 1.5rem;
@@ -255,6 +256,29 @@ main {
 }
 .server .server-footer button.server-button-forceStop:hover {
     background-color: #ff0000 !important;
+}
+.server .server-footer .server-footer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 1rem 0;
+}
+.server .server-footer .server-footer-bigger {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    margin: 1rem 0;
+}
+.server .server-footer .server-footer-bigger button {
+    width: 100%;
+}
+.server .server-footer .server-footer-bigger button:not(:last-child) {
+    margin-right: 1rem;
+}
+.server .server-footer .server-footer-bigger button i {
+    margin-right: 1rem;
 }
 
 /* Console */

@@ -138,13 +138,18 @@ function addElement(data, serverName, totalServers) {
         </div>
     </div>
     <div class="server-footer">
-        <button onclick="toggleConsole('${serverName}')" id="${serverName}-button-console"><i class="fa fa-solid fa-terminal"></i></button>
-        <button onclick="sendAction('${serverName}', 'start')" id="${serverName}-button-start"><i class="fa fa-solid fa-play"></i></button>
-        <button onclick="sendAction('${serverName}', 'stop')" disabled id="${serverName}-button-stop"><i class="fa fa-solid fa-stop"></i></button>
-        <button onclick="sendAction('${serverName}', 'restart')" disabled id="${serverName}-button-restart"><i
-                class="fa fa-solid fa-rotate-right"></i></button>
-        <button onclick="sendAction('${serverName}', 'forceStop')" class="server-button-forceStop"><i
-                class="fa fa-solid fa-ban"></i></button>
+        <div class="server-footer-actions">
+            <button onclick="sendAction('${serverName}', 'start')" id="${serverName}-button-start"><i class="fa fa-solid fa-play"></i></button>
+            <button onclick="sendAction('${serverName}', 'stop')" disabled id="${serverName}-button-stop"><i class="fa fa-solid fa-stop"></i></button>
+            <button onclick="sendAction('${serverName}', 'restart')" disabled id="${serverName}-button-restart"><i
+                    class="fa fa-solid fa-rotate-right"></i></button>
+            <button onclick="sendAction('${serverName}', 'forceStop')" class="server-button-forceStop"><i
+                    class="fa fa-solid fa-ban"></i></button>
+        </div>
+        <div class="server-footer-bigger">
+            <button onclick="toggleConsole('${serverName}')" id="${serverName}-button-console"><i class="fa fa-solid fa-terminal"></i> SHOW CONSOLE</button>
+            <button onclick="changeDevPath('${serverName}')"><i class="fa fa-solid fa-file"></i> SELECT FILE PATH</button>
+        </div>
     </div>`;
     serverList.appendChild(newServer);
 }
