@@ -1,5 +1,6 @@
+let listenerWs;
+
 function toggleConsole(server) {
-    const listenerWs = new WebSocket(`ws://localhost:8080/${server}`);
     const consoleDiv = document.getElementById('console');
 
     if (consoleDiv.style.display === "none") {
@@ -12,6 +13,7 @@ function toggleConsole(server) {
         generateDefaultData(server, consoleContent);
 
         // Connect to websocket
+        listenerWs = new WebSocket(`ws://localhost:8080/${server}`);
         listenerWs.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if (data.action === "log" && data.server === server) {
@@ -32,7 +34,7 @@ function toggleConsole(server) {
         };
     } else {
         consoleDiv.style.display = "none";
-        listenerWs.close();
+        if (listenerWs) listenerWs.close();
     }
 }
 
