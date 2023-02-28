@@ -1,6 +1,7 @@
 /*
 TODO:
 - Setting for plugin copy
+- WebSocket connection to 'ws://localhost:8080/' failed: 
 - Nice logging
 */
 let ws;
@@ -95,6 +96,14 @@ function init() {
             toggleConsole();
         }
     });
+    // add listeners for every checkbox for file dev
+    document.addEventListener('change', function(event) {
+        if (event.target.type === 'checkbox' && event.target.id.includes('-dev-check')) {
+            const server = event.target.id.split('-')[0];
+            const dev = event.target.checked;
+            fetch(`/api/update/${server}?hasFileDevEnabled=${dev}`);
+        }
+    });
 }
 
 function copyToClipboard(text) {
@@ -136,19 +145,34 @@ function addElement(data, serverName, totalServers) {
                 <input type="submit" value="Update" id="${serverName}-update-ram">
             </form>
         </div>
+        <div class="server-dev">
+            <div class="server-dev-info">
+                <h2 class="underline">ACTIVE COPY</h2>
+                <p id="${serverName}-dev-enabled"><strong>Enabled:</strong> ${data["hasFileDevEnabled"] ? "Yes" : "No"}</p>
+                <p id="${serverName}-dev-path"><strong>File Name:</strong> ${data["fileDevPath"] === "" ? "No path provided." : getOnlyFile(data["fileDevPath"])}</p>
+            </div>
+            <div class="server-dev-buttons">
+                <input id="${serverName}-dev-check" type="checkbox" ${data["hasFileDevEnabled"] ? "checked" : ""} ${data["fileDevPath"] === "" ? "disabled" : ""}>
+                    <label for="${serverName}-dev-check" class="check-trail">
+                    <span class="check-handler"></span>
+                </label>
+                <button onclick='fetch("/api/selectDevPath/${serverName}")'><i class="fa fa-solid fa-file"></i> SELECT FILE PATH</button>
+            </div>
+        </div>
     </div>
     <div class="server-footer">
-        <div class="server-footer-actions">
-            <button onclick="sendAction('${serverName}', 'start')" id="${serverName}-button-start"><i class="fa fa-solid fa-play"></i></button>
-            <button onclick="sendAction('${serverName}', 'stop')" disabled id="${serverName}-button-stop"><i class="fa fa-solid fa-stop"></i></button>
-            <button onclick="sendAction('${serverName}', 'restart')" disabled id="${serverName}-button-restart"><i
-                    class="fa fa-solid fa-rotate-right"></i></button>
-            <button onclick="sendAction('${serverName}', 'forceStop')" class="server-button-forceStop"><i
-                    class="fa fa-solid fa-ban"></i></button>
-        </div>
-        <div class="server-footer-bigger">
-            <button onclick="toggleConsole('${serverName}')" id="${serverName}-button-console"><i class="fa fa-solid fa-terminal"></i> SHOW CONSOLE</button>
-            <button onclick="changeDevPath('${serverName}')"><i class="fa fa-solid fa-file"></i> SELECT FILE PATH</button>
+        <div class="server-footer-wrapper">
+            <div class="server-footer-actions">
+                <button onclick="sendAction('${serverName}', 'start')" id="${serverName}-button-start"><i class="fa fa-solid fa-play"></i></button>
+                <button onclick="sendAction('${serverName}', 'stop')" disabled id="${serverName}-button-stop"><i class="fa fa-solid fa-stop"></i></button>
+                <button onclick="sendAction('${serverName}', 'restart')" disabled id="${serverName}-button-restart"><i
+                        class="fa fa-solid fa-rotate-right"></i></button>
+                <button onclick="sendAction('${serverName}', 'forceStop')" class="server-button-forceStop"><i
+                        class="fa fa-solid fa-ban"></i></button>
+            </div>
+            <div class="server-footer-bigger">
+                <button onclick="toggleConsole('${serverName}')" id="${serverName}-button-console"><i class="fa fa-solid fa-terminal"></i> SHOW CONSOLE</button>
+            </div>
         </div>
     </div>`;
     serverList.appendChild(newServer);
@@ -191,5 +215,14 @@ function updateWidgets(data) {
         status.innerHTML = data.data;
     } else if (data.action === "players") {
         document.getElementById(`${data.server}-players`).innerHTML = `${data.data.players} / ${data.data.maxPlayers}`;
+    } else if (data.action === "devPath") {
+        document.getElementById(`${data.server}-dev-enabled`).innerHTML = `<strong>Enabled:</strong> ${data.data.enabled ? "Yes" : "No"}`;
+        document.getElementById(`${data.server}-dev-path`).innerHTML = `<strong>Path:</strong> ${data.data.path === "" ? "No path provided." : data.data.path}`;
+        document.getElementById(`${data.server}-dev-check`).disabled = data.data.path === "";
+        document.getElementById(`${data.server}-dev-check`).checked = data.data.enabled;
     }
+}
+
+function getOnlyFile(path) {
+    return path.split("/")[(path.split("/").length - 1)];
 }

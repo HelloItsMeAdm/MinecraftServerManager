@@ -159,11 +159,8 @@ main {
     width: 100%;
     padding: 1rem 0;
 }
-.server .server-body h2 {
+.server .server-body h2, .server .server-body p {
     margin: 0 0 0.5rem 0;
-}
-.server .server-body p {
-    margin: 0 0 1.5rem 0;
 }
 .server .server-body .server-ip {
     color: var(--primary);
@@ -221,16 +218,44 @@ main {
     background-color: var(--lighter-darker-gray);
     cursor: not-allowed;
 }
+.server .server-body .server-dev {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 1.5rem 0 1rem 0;
+    border-top: 2px solid var(--lighter-darker-gray);
+    padding-top: 1.5rem;
+}
+.server .server-body .server-dev .server-dev-info p {
+    margin: 0;
+}
+.server .server-body .server-dev .server-dev-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+.server .server-body .server-dev .server-dev-buttons button {
+    width: auto;
+    margin-top: 1rem;
+}
 .server .server-footer {
+    width: 100%;
+    border-top: 2px solid var(--lighter-darker-gray);
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.server .server-footer .server-footer-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     width: 80%;
-    border-top: 2px solid var(--lighter-darker-gray);
-    padding-top: 1.5rem;
 }
-.server .server-footer button {
+.server .server-footer button, .server .server-body .server-dev button {
     background-color: var(--primary);
     border: 2px solid var(--darker-primary);
     border-radius: 5px;
@@ -241,7 +266,7 @@ main {
     font-size: 1rem;
     font-family: 'Poppins', sans-serif;
 }
-.server .server-footer button:hover {
+.server .server-footer button:hover, .server .server-body .server-dev button:hover {
     background-color: var(--darker-primary);
 }
 .server .server-footer button:disabled {
@@ -271,13 +296,16 @@ main {
     width: 100%;
     margin: 1rem 0;
 }
-.server .server-footer .server-footer-bigger button {
+.server .server-footer .server-footer-bigger button, .server .server-body .server-dev button {
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.server .server-footer .server-footer-bigger button:not(:last-child) {
+.server .server-footer .server-footer-bigger button:not(:last-child), .server .server-body .server-dev button:not(:last-child) {
     margin-right: 1rem;
 }
-.server .server-footer .server-footer-bigger button i {
+.server .server-footer .server-footer-bigger button i, .server .server-body .server-dev button i {
     margin-right: 1rem;
 }
 
@@ -459,8 +487,65 @@ main {
 .ws .ws-wrapper p a {
     color: var(--primary);
     text-decoration: none;
-    transition: color 0.3s;
+    animation: pulse 3s infinite;
 }
-.ws .ws-wrapper p a:hover {
-    color: var(--darker-primary);
+@keyframes pulse {
+    0% {
+        color: var(--primary);
+    }
+    50% {
+        color: var(--darker-primary);
+    }
+    100% {
+        color: var(--primary);
+    }
+}
+
+/* Check */
+
+input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+}
+.check-trail {
+    display: flex;
+    align-items: center;
+    width: 5em;
+    height: 3em;
+    background: var(--lighter-darker-gray);
+    border-radius: 2.5em;
+    transition: all .5s ease;
+    cursor: pointer;
+}
+.check-handler {
+    display: flex;
+    margin-left: 0.5em;
+    justify-content: center;
+    align-items: center;
+    width: 2em;
+    height: 2em;
+    background: #474747;
+    border-radius: 50%;
+    transition: all .5s ease;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+.check-handler::before {
+    content: "\00D7";
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+}
+input[type="checkbox"]:checked+.check-trail {
+    background: var(--primary);
+}
+input[type="checkbox"]:checked+.check-trail .check-handler {
+    margin-left: 50%;
+    background: var(--darker-primary);
+}
+input[type="checkbox"]:checked+.check-trail .check-handler::before {
+    content: "\2714"
+}
+input[type="checkbox"]:disabled+.check-trail {
+    cursor: not-allowed;
 }

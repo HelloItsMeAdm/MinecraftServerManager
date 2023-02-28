@@ -25,10 +25,24 @@ apiProxy.get('/api/control/:server/:action', (req, res) => {
     res.send('ok');
 });
 // update server ram
-apiProxy.get('/api/update/:server', (req, res) => {
-    config[req.params.server].ram = parseInt(req.query.ram);
-    jsonfile.writeFileSync('./config.json', config);
-    res.send('ok');
+apiProxy.get('/api/update/:server', (req, _res) => {
+    // get all params
+    let params = req.query;
+    for (const param in params) {
+        // check if param is a number
+        if (!isNaN(params[param])) {
+            params[param] = parseInt(params[param]);
+        }
+        // check if param is a boolean
+        if (params[param] == 'true') {
+            params[param] = true;
+        } else if (params[param] == 'false') {
+            params[param] = false;
+        }
+
+        config[req.params.server][param] = params[param];
+        jsonfile.writeFileSync('./config.json', config);
+    }
 });
 // get status of all servers
 apiProxy.get('/api/status', (_req, res) => {
@@ -56,6 +70,23 @@ apiProxy.get('/api/console/:server', (req, _res) => {
     const command = req.query.command;
     if (serverProcess[server] == undefined) return;
     serverProcess[server].stdin.write(command + '\n');
+});
+// for devPath seleciton
+apiProxy.get('/api/selectDevPath/:server', (req, _res) => {
+    const server = req.params.server;
+    const python = start('python', ['selectFile.py']);
+    let dataFromPy = [];
+    python.stdout.on('data', function(data) {
+        dataFromPy.push(data.toString());
+    });
+    python.on('close', (code) => {
+        if (code == 0) {
+            let path = dataFromPy[0].replace('\r\n', '');
+            config[server].fileDevPath = path;
+            jsonfile.writeFileSync('./config.json', config);
+            sendActiveDevInfo(server, path, config[server].hasFileDevEnabled);
+        }
+    });
 });
 
 // start server
@@ -197,6 +228,19 @@ function sendNewLogMessage(server, message) {
             server: server,
             action: "log",
             data: message
+        }));
+    });
+}
+
+function sendActiveDevInfo(server, path, enabled) {
+    wss.clients.forEach((client) => {
+        client.send(JSON.stringify({
+            server: server,
+            action: "devPath",
+            data: {
+                path: path,
+                enabled: enabled
+            }
         }));
     });
 }
