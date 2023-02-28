@@ -106,6 +106,7 @@ function serverControl(server, action) {
     } else if (action == 'restart') {
         updateServerStatus(server, 'Restarting...');
         if (config[server].isBungeecord) {
+            kill(serverProcess[server].pid);
             serverProcess[server].on('close', (_code) => {
                 serverControl(server, 'start', ram);
             });
