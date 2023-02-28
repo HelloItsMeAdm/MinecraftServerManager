@@ -1,5 +1,8 @@
 /*
 TODO:
+- Reconnect - recall all
+- Multi listen fix
+- Console log for different server fix
 - Setting for plugin copy
 - Nice logging
 */

@@ -8,6 +8,7 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 8080 });
 const Rcon = require('rcon-client').Rcon;
 const kill = require('tree-kill');
+const net = require('net');
 
 let serverProcess = {};
 let serverStatuses = {};
@@ -57,7 +58,6 @@ apiProxy.get('/api/console/:server', (req, _res) => {
     serverProcess[server].stdin.write(command + '\n');
 });
 
-
 // start server
 app.use(express.static('public'));
 app.use(apiProxy);
@@ -80,33 +80,54 @@ function serverControl(server, action) {
         serverProcess[server].stdout.on('data', (data) => {
             serverLogs[server] += data.toString() + '\n';
             sendNewLogMessage(server, data.toString());
-            if (data.toString().includes('Done (')) {
+            if (data.toString().includes('Done (') || data.toString().includes('Listening on /')) {
                 updateServerStatus(server, 'Online');
-            } else if (data.toString().includes("HelloItsMeAdm")) {
+            } else if (data.toString().includes("HelloItsMeAdm") && !config[server].isBungeecord) {
+                getServerStatus(server);
+            } else if (data.toString().includes("connected") || data.toString().includes("disconnected") && config[server].isBungeecord && !data.toString().includes("InitialHandler")) {
                 getServerStatus(server);
             }
         });
     } else if (action == 'stop') {
-        serverProcess[server].stdin.write('stop\n');
-        updateServerStatus(server, 'Stopping...');
-        serverProcess[server].on('close', (code) => {
-            if (code === 0) {
-                updateServerStatus(server, 'Offline');
-                updateServerPlayers(server, 0, 0);
-            }
-        });
+        if (config[server].isBungeecord) {
+            kill(serverProcess[server].pid);
+            updateServerStatus(server, 'Offline');
+            updateServerPlayers(server, 0, 0);
+        } else {
+            serverProcess[server].stdin.write('stop\n');
+            updateServerStatus(server, 'Stopping...');
+            serverProcess[server].on('close', (code) => {
+                if (code === 0) {
+                    updateServerStatus(server, 'Offline');
+                    updateServerPlayers(server, 0, 0);
+                }
+            });
+        }
     } else if (action == 'restart') {
-        serverProcess[server].stdin.write('stop\n');
         updateServerStatus(server, 'Restarting...');
-        serverProcess[server].on('close', (code) => {
-            if (code === 0) {
+        if (config[server].isBungeecord) {
+            serverProcess[server].on('close', (_code) => {
                 serverControl(server, 'start', ram);
-            }
-        });
+            });
+        } else {
+            serverProcess[server].stdin.write('stop\n');
+            serverProcess[server].on('close', (code) => {
+                if (code === 0) {
+                    serverControl(server, 'start', ram);
+                }
+            });
+        }
     } else if (action == 'forceStop') {
-        kill(serverProcess[server].pid);
-        updateServerStatus(server, 'Offline');
-        updateServerPlayers(server, 0, 0);
+        if (config[server].isBungeecord) {
+            kill(serverProcess[server].pid);
+            serverProcess[server].on('close', (_code) => {
+                serverControl(server, 'start', ram);
+            });
+        } else {
+            kill(serverProcess[server].pid);
+            updateServerStatus(server, 'Offline');
+            updateServerPlayers(server, 0, 0);
+        }
     }
 }
 
@@ -122,17 +143,35 @@ function updateServerStatus(server, status) {
 }
 
 async function getServerStatus(server) {
-    const rcon = await Rcon.connect({
-        host: "localhost",
-        port: config[server].rconport,
-        password: config[server].rconpassword
-    });
-    await rcon.send('list').then((response) => {
-        let players = response.split(' ')[2].split('/')[0];
-        let maxPlayers = response.split(' ')[2].split('/')[1];
-        updateServerPlayers(server, parseInt(players), parseInt(maxPlayers));
-    });
-    rcon.end();
+    if (config[server].isBungeecord) {
+        const socket = net.createConnection({
+            host: 'localhost',
+            port: config[server].port
+        }, () => {
+            socket.write(Buffer.from([0xFE, 0x01]));
+        });
+        socket.on('data', (data) => {
+            let dataSplit = data.toString().split('');
+            dataSplit = dataSplit.filter((item) => {
+                return item != '\x00';
+            });
+            let players = dataSplit[dataSplit.length - 2];
+            let maxPlayers = dataSplit[dataSplit.length - 1];
+            updateServerPlayers(server, parseInt(players), parseInt(maxPlayers));
+        });
+    } else {
+        const rcon = await Rcon.connect({
+            host: "localhost",
+            port: config[server].rconport,
+            password: config[server].rconpassword
+        });
+        await rcon.send('list').then((response) => {
+            let players = response.split(' ')[2].split('/')[0];
+            let maxPlayers = response.split(' ')[2].split('/')[1];
+            updateServerPlayers(server, parseInt(players), parseInt(maxPlayers));
+        });
+        rcon.end();
+    }
 }
 
 function updateServerPlayers(server, players, maxPlayers) {
@@ -151,6 +190,7 @@ function updateServerPlayers(server, players, maxPlayers) {
 }
 
 function sendNewLogMessage(server, message) {
+    if (message == '>') return;
     wss.clients.forEach((client) => {
         client.send(JSON.stringify({
             server: server,
