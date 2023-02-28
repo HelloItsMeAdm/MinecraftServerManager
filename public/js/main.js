@@ -6,6 +6,7 @@ TODO:
 */
 let ws;
 let wsDiv;
+let checkboxes = {};
 
 window.onload = init;
 
@@ -60,6 +61,22 @@ function init() {
                             }
                         });
                     }
+                    // add listeners for every checkbox for file dev
+                    document.querySelectorAll('input[type=checkbox]').forEach(item => {
+                        checkboxes[item] = {
+                            lastChecked: item.checked
+                        };
+                    });
+                    document.addEventListener('change', function(event) {
+                        if (event.target.type === 'checkbox' && event.target.id.includes('-dev-check')) {
+                            const dev = event.target.checked;
+                            if (dev === checkboxes[event.target].lastChecked) return;
+                            checkboxes[event.target].lastChecked = dev;
+                            const server = event.target.id.split('-')[0];
+                            fetch(`/api/update/${server}?hasFileDevEnabled=${dev}`);
+                            fetch(`/api/toggleDev/${server}?enabled=${dev}`);
+                        }
+                    });
                 });
             });
         });
@@ -94,14 +111,6 @@ function init() {
     document.addEventListener('click', function(event) {
         if (event.target.id === 'console' && document.getElementById('console').style.display !== "none") {
             toggleConsole();
-        }
-    });
-    // add listeners for every checkbox for file dev
-    document.addEventListener('change', function(event) {
-        if (event.target.type === 'checkbox' && event.target.id.includes('-dev-check')) {
-            const server = event.target.id.split('-')[0];
-            const dev = event.target.checked;
-            fetch(`/api/update/${server}?hasFileDevEnabled=${dev}`);
         }
     });
 }

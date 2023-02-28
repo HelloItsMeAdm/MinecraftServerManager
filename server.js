@@ -88,6 +88,12 @@ apiProxy.get('/api/selectDevPath/:server', (req, _res) => {
         }
     });
 });
+// for devPath toggle
+apiProxy.get('/api/toggleDev/:server', (req, res) => {
+    const server = req.params.server;
+    const enabled = req.query.enabled;
+    toggleDev(server, enabled);
+});
 
 // start server
 app.use(express.static('public'));
@@ -95,6 +101,13 @@ app.use(apiProxy);
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 });
+
+// enable auto copy
+for (const server in config) {
+    if (config[server].hasFileDevEnabled) {
+        toggleDev(server, true);
+    }
+}
 
 function serverControl(server, action) {
     let ram = config[server].ram;
@@ -243,4 +256,8 @@ function sendActiveDevInfo(server, path, enabled) {
             }
         }));
     });
+}
+
+function toggleDev(server, enabled) {
+    console.log('Toggling dev for ' + server + ' to ' + enabled);
 }
