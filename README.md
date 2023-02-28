@@ -14,7 +14,7 @@ npm install
 ## Server setup
 - All servers are located in root subfolder named "server"
 - You need to specify .jar file in config.json eg:
-```
+```javascript
 "filename": "spigot.jar" // This means that the file is located in ./server/SERVERNAME/spigot.jar
 ```
 - Then add all required specs to the config.json and run the server!
