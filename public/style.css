@@ -1,0 +1,442 @@
+:root {
+    --primary: #2075e4;
+    --darker-primary: #0f4a9d;
+    --dark-gray: #181818;
+    --lighter-gray: #2c2c2c;
+    --lighter-darker-gray: #3c3c3c;
+    --light-gray: #636363;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--dark-gray);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+::selection {
+    background-color: var(--primary);
+    color: #000;
+}
+
+/*scrollbar*/
+
+::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--lighter-darker-gray);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--darker-primary);
+}
+
+/* Header */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background-color: #000;
+    width: calc(100% - 4rem);
+}
+header .left {
+    display: flex;
+    align-items: center;
+}
+header .left img {
+    width: 100px;
+    height: 100px;
+    margin-right: 3rem;
+}
+header .left .title {
+    display: flex;
+    flex-direction: column;
+}
+header .left .title h1, p {
+    margin: 0;
+}
+header .left .title p {
+    font-style: italic;
+}
+header .right i {
+    color: #ff0000;
+}
+header .right h2 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+header .right a {
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.3s;
+}
+header .right a:hover {
+    color: var(--primary);
+}
+
+/* Main */
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 85%;
+}
+.underline {
+    text-decoration: underline 3px;
+}
+
+/* Server */
+
+.server {
+    padding: 2rem;
+    border: 2px solid var(--lighter-darker-gray);
+    margin: 1rem;
+    background-color: var(--lighter-gray);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.server.max2 {
+    width: calc(80% / 2 - 2rem);
+}
+.server.max3 {
+    width: calc(80% / 3 - 2rem);
+}
+.server .server-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 2px solid var(--lighter-darker-gray);
+    padding-bottom: 1.5rem;
+}
+.server .server-header h3 {
+    margin: 0;
+}
+.server .server-header .right {
+    display: flex;
+    align-items: center;
+}
+.status-badge {
+    border-radius: 25px;
+    padding: 0.2rem 0.8rem;
+    margin: 0 0.8rem 0 0;
+    color: #fff;
+    font-weight: bold;
+}
+.status-badge.online {
+    background-color: #008800;
+}
+.status-badge.offline {
+    background-color: #ff2626;
+}
+.status-badge.working {
+    background-color: #ff9900;
+}
+.status-badge.players {
+    background-color: #6e6e6e;
+}
+.server .server-body {
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    width: 100%;
+    padding: 1rem 0;
+}
+.server .server-body h2 {
+    margin: 0 0 0.5rem 0;
+}
+.server .server-body p {
+    margin: 0 0 1.5rem 0;
+}
+.server .server-body .server-ip {
+    color: var(--primary);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.server .server-body .server-ip:hover {
+    color: #fff;
+}
+.server .server-body .server-ram p {
+    font-size: 1.25rem;
+}
+.server .server-body .server-ram form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.server .server-body .server-ram form p {
+    margin: 0 0.5rem;
+}
+.server .server-body .server-ram form input[type="range"] {
+    height: 5px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    cursor: pointer;
+    margin: 0 1rem;
+    flex-grow: 1;
+}
+.server .server-body .server-ram form input[type="range"]:hover {
+    opacity: 1;
+}
+.server .server-body .server-ram form input[type="range"]:disabled {
+    background: #636363;
+    cursor: not-allowed;
+}
+.server .server-body .server-ram form input[type="submit"] {
+    background-color: var(--primary);
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+.server .server-body .server-ram form input[type="submit"]:hover {
+    background-color: var(--darker-primary);
+}
+.server .server-body .server-ram form input[type="submit"]:disabled {
+    background-color: var(--lighter-darker-gray);
+    cursor: not-allowed;
+}
+.server .server-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    border-top: 2px solid var(--lighter-darker-gray);
+    padding-top: 1.5rem;
+}
+.server .server-footer button {
+    background-color: var(--primary);
+    border: 2px solid var(--darker-primary);
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+.server .server-footer button:hover {
+    background-color: var(--darker-primary);
+}
+.server .server-footer button:disabled {
+    background-color: var(--light-gray);
+    border: 2px solid var(--lighter-darker-gray);
+    cursor: not-allowed;
+}
+.server .server-footer button.server-button-forceStop {
+    background-color: #ff3636 !important;
+    border: 2px solid #ff0000 !important;
+    transition: background-color 0.3s;
+}
+.server .server-footer button.server-button-forceStop:hover {
+    background-color: #ff0000 !important;
+}
+
+/* Console */
+
+.console {
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.console .console-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    height: 75%;
+    background-color: var(--dark-gray);
+    border-radius: 10px;
+    padding: 1rem;
+}
+.console .console-wrapper .console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 2px solid var(--lighter-darker-gray);
+}
+.console .console-wrapper .console-header h2 {
+    margin: 0;
+    padding: 0.5rem 2rem 1rem 0.75rem;
+}
+.console .console-wrapper .console-header .console-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0.25rem 2rem 2rem;
+}
+.console .console-wrapper .console-header .console-buttons button {
+    background-color: var(--primary);
+    border: 2px solid var(--darker-primary);
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    margin: 0 0.5rem;
+}
+.console .console-wrapper .console-header .console-buttons button:hover {
+    background-color: var(--darker-primary);
+}
+.console .console-wrapper .console-header .console-buttons #button-autoscroll.disabled {
+    background-color: var(--light-gray);
+    border: 2px solid var(--lighter-darker-gray);
+}
+.console .console-wrapper .console-header .console-buttons #button-autoscroll.disabled:hover {
+    background-color: var(--lighter-darker-gray);
+}
+.console .console-wrapper .console-content {
+    padding: 0 0 1rem 0;
+    margin: 1rem 0;
+    overflow-y: scroll;
+    background-color: #1e1e1e;
+    height: 100%;
+}
+.console .console-wrapper .console-content p {
+    margin: 0;
+    padding: 0 0.5rem;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1rem;
+    color: #fff;
+}
+.console .console-wrapper .console-content p.type-warn {
+    color: #ffcc00;
+}
+.console .console-wrapper .console-content p.type-error {
+    color: #ff3636;
+}
+.console .console-wrapper .console-content p.type-fatal {
+    color: #bb0000;
+}
+.console .console-wrapper .console-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-top: 2px solid var(--lighter-darker-gray);
+    padding-top: 1rem;
+}
+.console .console-wrapper .console-input input {
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    background-color: var(--darker-gray);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1rem;
+    transition: outline 0.3s;
+    margin-right: 1rem;
+    outline: 1px solid var(--light-gray);
+}
+.console .console-wrapper .console-input input:focus {
+    outline: 1px solid var(--primary);
+}
+.console .console-wrapper .console-input input::placeholder {
+    color: var(--lighter-darker-gray);
+    transition: color 0.3s;
+}
+.console .console-wrapper .console-input input:focus::placeholder {
+    color: var(--darker-primary);
+}
+.console .console-wrapper .console-input button {
+    background-color: var(--primary);
+    border: 2px solid var(--darker-primary);
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+.console .console-wrapper .console-input button:hover {
+    background-color: var(--darker-primary);
+}
+.console .console-wrapper .console-input button:disabled {
+    background-color: var(--light-gray);
+    border: 2px solid var(--lighter-darker-gray);
+    cursor: not-allowed;
+}
+
+/* WS dialog */
+
+.ws {
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ws .ws-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: var(--dark-gray);
+    padding: 3rem;
+}
+.ws .ws-wrapper h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 3rem;
+}
+.ws .ws-wrapper h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 2rem;
+}
+.ws .ws-wrapper p {
+    margin: 0;
+    padding: 0;
+    font-size: 1rem;
+    color: var(--lighter-darker-gray);
+}
+.ws .ws-wrapper p a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.ws .ws-wrapper p a:hover {
+    color: var(--darker-primary);
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServerManager</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="main.js"></script>
+    <script src="console.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="left">
+            <img src="https://www.vojtech-adam.cz/images/logo.svg" alt="Logo">
+            <div class="title">
+                <h1>ServerManager</h1>
+                <p>Easy way to manage all your servers!</p>
+            </div>
+        </div>
+        <div class="right">
+            <h2>Made with <i class="fa fa-solid fa-heart"></i> by <a href="https://www.vojtech-adam.cz/" target="_blank">HelloItsMeAdm</a></h2>
+        </div>
+    </header>
+
+    <main id="server-list"></main>
+
+    <div class="console" id="console" style="display: none;">
+        <div class="console-wrapper">
+            <div class="console-header">
+                <h2 class="underline" id="console-title"></h2>
+                <div class="console-buttons">
+                    <button onclick="toggleAutoscroll()" id="button-autoscroll"><i class="fa fa-solid fa-arrow-down"></i></button>
+                    <button onclick="toggleConsole()"><i class="fa fa-solid fa-close"></i></button>
+                </div>
+            </div>
+            <div class="console-content" id="console-content"></div>
+            <div class="console-input">
+                <input type="text" id="console-input" placeholder="Type here..." required autocomplete="off" pattern=".*\S.*" spellcheck="false">
+                <button class="console-button" onclick="sendConsoleInput()"><i class="fa fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="ws" id="ws">
+        <div class="ws-wrapper">
+            <h1 class="underline">WebSocket</h1>
+            <h2>Connecting to server...</h2>
+            <p>Trying to reach host <a href="http://localhost:3000/?" target="_blank">localhost:3000</a></p>
+            <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" background="transparent" type="text/javascript"></script>
+            <lottie-player class="content-image" src="https://assets3.lottiefiles.com/packages/lf20_ijHyRhrzvj.json" background="transparent" speed="1" loop="" autoplay=""></lottie-player>
+        </div>
+    </div>
+</body>
+
+</html>
