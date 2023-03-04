@@ -1,7 +1,5 @@
 /*
 TODO:
-- Setting for plugin copy
-- WebSocket connection to 'ws://localhost:8080/' failed: 
 - ECONNRESET
 - Nice logging
 */

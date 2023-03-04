@@ -174,16 +174,9 @@ function serverControl(server, action) {
             });
         }
     } else if (action == 'forceStop') {
-        if (config[server].isBungeecord) {
-            kill(serverProcess[server].pid);
-            serverProcess[server].on('close', (_code) => {
-                serverControl(server, 'start', ram);
-            });
-        } else {
-            kill(serverProcess[server].pid);
-            updateServerStatus(server, 'Offline');
-            updateServerPlayers(server, 0, 0);
-        }
+        kill(serverProcess[server].pid);
+        updateServerStatus(server, 'Offline');
+        updateServerPlayers(server, 0, 0);
     }
 }
 
