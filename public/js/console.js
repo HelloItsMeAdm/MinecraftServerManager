@@ -86,3 +86,8 @@ function sendConsoleInput() {
     fetch(`/api/console/${server}?command=${input.value}`);
     input.value = "";
 }
+
+function restartServer() {
+    const server = document.getElementById('console-title').innerHTML.split(' - ')[1];
+    fetch(`/api/control/${server}/restart`);
+}
