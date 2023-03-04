@@ -1,3 +1,4 @@
+process.chdir(__dirname);
 const express = require('express');
 const app = express();
 const start = require('child_process').spawn;
@@ -9,10 +10,12 @@ const wss = new WebSocket.Server({ port: 8080 });
 const Rcon = require('rcon-client').Rcon;
 const kill = require('tree-kill');
 const net = require('net');
+const fs = require('fs');
 
 let serverProcess = {};
 let serverStatuses = {};
 let serverLogs = {};
+let devProcess = [];
 
 // return config file
 const apiProxy = express.Router();
@@ -89,10 +92,18 @@ apiProxy.get('/api/selectDevPath/:server', (req, _res) => {
     });
 });
 // for devPath toggle
-apiProxy.get('/api/toggleDev/:server', (req, res) => {
+apiProxy.get('/api/toggleDev/:server', (req, _res) => {
     const server = req.params.server;
     const enabled = req.query.enabled;
-    toggleDev(server, enabled);
+    let _enabled;
+    if (enabled == "true") {
+        _enabled = true;
+    } else {
+        _enabled = false;
+    }
+    toggleDev(server, _enabled);
+    config[server].hasFileDevEnabled = _enabled;
+    jsonfile.writeFileSync('./config.json', config);
 });
 
 // start server
@@ -259,5 +270,23 @@ function sendActiveDevInfo(server, path, enabled) {
 }
 
 function toggleDev(server, enabled) {
-    console.log('Toggling dev for ' + server + ' to ' + enabled);
+    if (devProcess.includes(server)) return;
+    devProcess.push(server);
+
+    if (enabled) {
+        fs.copyFile(config[server].fileDevPath, `./server/${server}/plugins/${getOnlyFile(config[server].fileDevPath)}`, (err) => {
+            if (err) throw err;
+        });
+        setTimeout(() => {
+            devProcess.splice(devProcess.indexOf(server), 1);
+            toggleDev(server, config[server].hasFileDevEnabled);
+            return;
+        }, 2000);
+    } else {
+        devProcess.splice(devProcess.indexOf(server), 1);
+    }
+}
+
+function getOnlyFile(path) {
+    return path.split("/")[(path.split("/").length - 1)];
 }

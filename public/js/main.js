@@ -2,6 +2,7 @@
 TODO:
 - Setting for plugin copy
 - WebSocket connection to 'ws://localhost:8080/' failed: 
+- ECONNRESET
 - Nice logging
 */
 let ws;
@@ -75,6 +76,7 @@ function init() {
                             const server = event.target.id.split('-')[0];
                             fetch(`/api/update/${server}?hasFileDevEnabled=${dev}`);
                             fetch(`/api/toggleDev/${server}?enabled=${dev}`);
+                            document.getElementById(`${server}-dev-enabled`).innerHTML = `<strong>Enabled:</strong> ${dev ? "Yes" : "No"}`
                         }
                     });
                 });
@@ -226,7 +228,7 @@ function updateWidgets(data) {
         document.getElementById(`${data.server}-players`).innerHTML = `${data.data.players} / ${data.data.maxPlayers}`;
     } else if (data.action === "devPath") {
         document.getElementById(`${data.server}-dev-enabled`).innerHTML = `<strong>Enabled:</strong> ${data.data.enabled ? "Yes" : "No"}`;
-        document.getElementById(`${data.server}-dev-path`).innerHTML = `<strong>Path:</strong> ${data.data.path === "" ? "No path provided." : data.data.path}`;
+        document.getElementById(`${data.server}-dev-path`).innerHTML = `<strong>Path:</strong> ${data.data.path === "" ? "No path provided." : getOnlyFile(data.data.path)}`;
         document.getElementById(`${data.server}-dev-check`).disabled = data.data.path === "";
         document.getElementById(`${data.server}-dev-check`).checked = data.data.enabled;
     }
