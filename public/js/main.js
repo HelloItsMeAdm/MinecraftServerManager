@@ -181,6 +181,7 @@ function addElement(data, serverName, totalServers) {
             </div>
             <div class="server-footer-bigger">
                 <button onclick="toggleConsole('${serverName}')" id="${serverName}-button-console"><i class="fa fa-solid fa-terminal"></i> SHOW CONSOLE</button>
+                <button onclick="openPluginFolder('${serverName}')"><i class="fa fa-solid fa-folder"></i> PLUGINS FOLDER</button>
             </div>
         </div>
     </div>`;
@@ -234,4 +235,8 @@ function updateWidgets(data) {
 
 function getOnlyFile(path) {
     return path.split("/")[(path.split("/").length - 1)];
+}
+
+function openPluginFolder(server) {
+    fetch(`/api/openPlugins/${server}`);
 }

@@ -105,6 +105,12 @@ apiProxy.get('/api/toggleDev/:server', (req, _res) => {
     config[server].hasFileDevEnabled = _enabled;
     jsonfile.writeFileSync('./config.json', config);
 });
+// for opening plugins folder
+apiProxy.get('/api/openPlugins/:server', (req, _res) => {
+    const server = req.params.server;
+    if (server == undefined) return;
+    start('python', ['openPlugins.py', `${__dirname}/server/${server}/plugins`]);
+});
 
 // start server
 app.use(express.static('public'));
