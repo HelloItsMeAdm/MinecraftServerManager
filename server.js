@@ -111,6 +111,11 @@ apiProxy.get('/api/openPlugins/:server', (req, _res) => {
     if (server == undefined) return;
     start('python', ['openPlugins.py', `${__dirname}/server/${server}/plugins`]);
 });
+// for exiting the server
+apiProxy.get('/api/exit', (_req, res) => {
+    res.send('ok');
+    process.exit();
+});
 
 // start server
 app.use(express.static('public'));

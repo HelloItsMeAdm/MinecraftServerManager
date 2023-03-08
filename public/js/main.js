@@ -240,3 +240,7 @@ function getOnlyFile(path) {
 function openPluginFolder(server) {
     fetch(`/api/openPlugins/${server}`);
 }
+
+async function exitServer() {
+    if (confirm("Are you sure you want to exit the server?")) fetch('/api/exit');
+}
