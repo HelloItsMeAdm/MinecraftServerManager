@@ -11,6 +11,8 @@ const Rcon = require('rcon-client').Rcon;
 const kill = require('tree-kill');
 const net = require('net');
 const fs = require('fs');
+const Logger = require('./logger.js');
+const logger = new Logger();
 
 let serverProcess = {};
 let serverStatuses = {};
@@ -21,10 +23,12 @@ let devProcess = [];
 const apiProxy = express.Router();
 apiProxy.get('/api/config', (_req, res) => {
     res.json(config);
+    logger.log('API', 'INFO', 'Config file was sent');
 });
 // handle all server actions
 apiProxy.get('/api/control/:server/:action', (req, res) => {
     serverControl(req.params.server, req.params.action, req.query.ram);
+    logger.log('ServerStatus', 'INFO', `Server ${req.params.server} was ${req.params.action}ed`);
     res.send('ok');
 });
 // update server ram
@@ -45,11 +49,13 @@ apiProxy.get('/api/update/:server', (req, _res) => {
 
         config[req.params.server][param] = params[param];
         jsonfile.writeFileSync('./config.json', config);
+        logger.log('API', 'INFO', `Server ${req.params.server} was updated`);
     }
 });
 // get status of all servers
 apiProxy.get('/api/status', (_req, res) => {
     res.json(serverStatuses);
+    logger.log('API', 'INFO', 'Server statuses were sent');
 });
 // get log of server
 apiProxy.get('/api/log/:server', (req, res) => {
@@ -66,6 +72,7 @@ apiProxy.get('/api/log/:server', (req, res) => {
         log.push(line);
     });
     res.json(log);
+    logger.log('API', 'INFO', `Server ${req.params.server} log was sent`);
 });
 // listen on url /api/console/:server for incoming commands
 apiProxy.get('/api/console/:server', (req, _res) => {
@@ -73,6 +80,7 @@ apiProxy.get('/api/console/:server', (req, _res) => {
     const command = req.query.command;
     if (serverProcess[server] == undefined) return;
     serverProcess[server].stdin.write(command + '\n');
+    logger.log('COMMAND', 'INFO', `Sent command '/${command}' to server ${server}`);
 });
 // for devPath seleciton
 apiProxy.get('/api/selectDevPath/:server', (req, _res) => {
@@ -88,6 +96,7 @@ apiProxy.get('/api/selectDevPath/:server', (req, _res) => {
             config[server].fileDevPath = path;
             jsonfile.writeFileSync('./config.json', config);
             sendActiveDevInfo(server, path, config[server].hasFileDevEnabled);
+            logger.log('FileDevPath', 'INFO', `Server ${server} dev path was updated`);
         }
     });
 });
@@ -104,16 +113,19 @@ apiProxy.get('/api/toggleDev/:server', (req, _res) => {
     toggleDev(server, _enabled);
     config[server].hasFileDevEnabled = _enabled;
     jsonfile.writeFileSync('./config.json', config);
+    logger.log('FileDevPath', 'INFO', `Server ${server} dev path was ${_enabled ? 'enabled' : 'disabled'}`);
 });
 // for opening plugins folder
 apiProxy.get('/api/openPlugins/:server', (req, _res) => {
     const server = req.params.server;
     if (server == undefined) return;
     start('python', ['openPlugins.py', `${__dirname}/server/${server}/plugins`]);
+    logger.log('PYTHON', 'INFO', `Opened plugins folder for server ${server}`);
 });
 // for exiting the server
 apiProxy.get('/api/exit', (_req, res) => {
     res.send('ok');
+    logger.log('EXIT', 'WARNING', 'Server was exited');
     process.exit();
 });
 
@@ -121,14 +133,19 @@ apiProxy.get('/api/exit', (_req, res) => {
 app.use(express.static('public'));
 app.use(apiProxy);
 app.listen(3000, () => {
-    console.log('Server running on port 3000');
+    logger.log("Express", "INFO", 'Server started on port 3000');
 });
 
-// enable auto copy
+// enable auto copy and send to logger
+let serverList = [];
 for (const server in config) {
+    logger.updateServerStats(server, 'Offline', 0, 1, config[server].ram);
     if (config[server].hasFileDevEnabled) {
         toggleDev(server, true);
     }
+    serverList.push(server);
+    console.log(serverList)
+    logger.setServerList(serverList);
 }
 
 function serverControl(server, action) {
@@ -200,6 +217,7 @@ function updateServerStatus(server, status) {
             data: status
         }));
     });
+    logger.updateServerStats(server, status, serverStatuses[server].players, serverStatuses[server].maxPlayers, config[server].ram);
 }
 
 async function getServerStatus(server) {
@@ -247,6 +265,7 @@ function updateServerPlayers(server, players, maxPlayers) {
             }
         }));
     });
+    logger.updateServerStats(server, serverStatuses[server].status, players, maxPlayers, config[server].ram);
 }
 
 function sendNewLogMessage(server, message) {

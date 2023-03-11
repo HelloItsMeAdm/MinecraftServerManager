@@ -11,6 +11,7 @@ window.onload = init;
 
 function init() {
     // start ws
+    ws = null;
     ws = new WebSocket('ws://localhost:8080');
     wsDiv = document.getElementById('ws');
     ws.onopen = () => {
@@ -20,6 +21,7 @@ function init() {
         wsDiv.style.display = "flex";
 
         function wsReconnect() {
+            ws = null;
             ws = new WebSocket('ws://localhost:8080');
             ws.onopen = () => {
                 wsDiv.style.display = "none";
