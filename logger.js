@@ -1,6 +1,4 @@
 const os = require('os');
-//TODO: replace server with server and color from config
-// HEADER
 const colors = {
     reset: "\x1b[0m",
     underline: "\x1b[4m",
